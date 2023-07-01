@@ -5,7 +5,9 @@ import NewBook from './components/NewBook'
 
 import { useQuery } from '@apollo/client'
 
-import { ALL_CONTENT } from './queries'
+import {
+  ALL_CONTENT,
+} from './queries'
 
 import {
   BrowserRouter as Router,
