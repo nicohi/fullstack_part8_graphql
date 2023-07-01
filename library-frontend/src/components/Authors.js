@@ -1,4 +1,28 @@
+import { useState } from 'react';
+import { useMutation } from '@apollo/client'
+import Select from 'react-select';
+
+import { EDIT_AUTHOR, ALL_CONTENT } from '../queries'
+
 const Authors = ({ show, authors }) => {
+  const [name, setName] = useState(null);
+  const [born, setBorn] = useState('')
+
+  const [ editAuthor ] = useMutation(EDIT_AUTHOR, {
+    refetchQueries: [ { query: ALL_CONTENT } ],
+    onError: (error) => {
+      const errors = error.graphQLErrors[0].extensions.error.errors
+      const messages = Object.values(errors).map(e => e.message).join('\n')
+      console.log(messages)
+      //setError(messages)
+    }
+  })
+  const submit = async (event) => {
+    event.preventDefault()
+    editAuthor({  variables: { name: name.value, born: parseInt(born) } })
+    setBorn('')
+  }
+
   if (!show) {
     return null
   }
@@ -22,6 +46,22 @@ const Authors = ({ show, authors }) => {
           ))}
         </tbody>
       </table>
+      <h3>Set birthyear</h3>
+      <form onSubmit={submit}>
+        <Select
+          defaultValue={name}
+          onChange={setName}
+          options={authors.map(a => ({ value: a.name, label: a.name })) }
+        />
+        <div>
+          born
+          <input
+            value={born}
+            onChange={({ target }) => setBorn(target.value)}
+          />
+        </div>
+        <button type="submit">update author</button>
+      </form>
     </div>
   )
 }
