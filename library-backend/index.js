@@ -111,6 +111,13 @@ const resolvers = {
       const exists = await Book.exists({ title: args.title })
       try {
         const author = await Author.findOne({ name: args.author })
+        if (!author) {
+          throw new GraphQLError('author not found', {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+            }
+          })
+        }
         if (exists) {
           return Book.findOneAndUpdate({ title: args.title }, { ...args, author: author }, {new: true})
                      .populate('author')
