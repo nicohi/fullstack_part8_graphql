@@ -73,7 +73,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Books show={true} books={result.data.allBooks} />} />
         <Route path="/authors" element={<Authors show={true} authors={result.data.allAuthors} />} />
-        <Route path="/books" element={<Books show={true} books={result.data.allBooks} />} />
+        <Route path="/books" element={<Books show={true} books={result.data.allBooks} refetch={result.refetch} />} />
         <Route path="/add" element={<NewBook show={true} />} />
         <Route path="/login" element={<LoginForm setToken={setToken} setError={notify} /> } />
       </Routes>

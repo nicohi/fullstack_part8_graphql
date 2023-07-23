@@ -1,4 +1,12 @@
-const Books = ({ show, books }) => {
+const Books = ({ show, books, refetch }) => {
+
+  const getGenre = genre => async (event) => {
+    event.preventDefault()
+    //console.log(genre)
+
+    refetch({ genre: genre })
+  }
+
   if (!show) {
     return null
   }
@@ -23,6 +31,18 @@ const Books = ({ show, books }) => {
           ))}
         </tbody>
       </table>
+      <div>
+        {Array.from(books.map(b => b.genres)
+                         .reduce((s, vv) => {
+                           for (var i = 0; i<vv.length; i++)
+                             s.add(vv[i])
+                           return s
+                         }, new Set()))
+              .map( g => (
+                <button key={g} onClick={getGenre(g)}>{g}</button>
+              ))}
+        <button key='all genres' onClick={getGenre('')}>all genres</button>
+      </div>
     </div>
   )
 }
