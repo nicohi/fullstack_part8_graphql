@@ -1,4 +1,10 @@
+import { useEffect } from 'react'
+
 const Books = ({ show, books, refetch }) => {
+
+  useEffect(() => {
+    refetch({ genre: "" })
+  }, [refetch, show])
 
   const getGenre = genre => async (event) => {
     event.preventDefault()

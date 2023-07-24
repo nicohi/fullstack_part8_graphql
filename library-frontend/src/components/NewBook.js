@@ -13,11 +13,11 @@ const NewBook = (props) => {
   const [ addBook ] = useMutation(ADD_BOOK, {
     refetchQueries: [ { query: ALL_CONTENT } ],
     onError: (error) => {
-      const errors = error.graphQLErrors[0].extensions.error.errors
+      const errors = error.graphQLErrors
       const messages = Object.values(errors).map(e => e.message).join('\n')
       console.log(messages)
 
-      //setError(messages)
+      props.notify(messages)
     }
   })
 

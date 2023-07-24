@@ -3,6 +3,7 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
+import Recommend from './components/Recommend'
 
 import { useQuery, useApolloClient } from '@apollo/client'
 
@@ -36,15 +37,17 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [token, setToken] = useState(null)
   const result = useQuery(ALL_CONTENT)
+
   const client = useApolloClient()
 
   const padding = {
     paddingRight: 5
   }
 
-  if (result.loading)  {
+  if (result.loading )  {
     return <div>loading...</div>
   }
+
 
   const notify = (message) => {
     setErrorMessage(message)
@@ -65,6 +68,7 @@ const App = () => {
         <Link style={padding} to="/authors">authors</Link>
         <Link style={padding} to="/books">books</Link>
         { token ? <Link style={padding} to="/add">add book</Link> : null}
+        { token ? <Link style={padding} to="/recommend">recommend</Link> : null}
         { !token ? <Link style={padding} to="/login">login</Link> : <button style={padding} onClick={logout}>logout</button> }
       </div>
 
@@ -72,9 +76,15 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={<Books show={true} books={result.data.allBooks} />} />
-        <Route path="/authors" element={<Authors show={true} authors={result.data.allAuthors} />} />
-        <Route path="/books" element={<Books show={true} books={result.data.allBooks} refetch={result.refetch} />} />
-        <Route path="/add" element={<NewBook show={true} />} />
+        <Route path="/authors" element={<Authors show={true} authors={result.data.allAuthors} notify={notify} />} />
+        <Route path="/books" element={<Books show={true}
+                                             books={result.data.allBooks}
+                                             refetch={result.refetch} />} />
+        <Route path="/add" element={<NewBook show={true} notify={notify} />} />
+        { result.data.me ? <Route path="/recommend" element={<Recommend show={result.data.me}
+                                                                        books={result.data.allBooks}
+                                                                        genre={result.data.me.favoriteGenre}
+                                                                        refetch={result.refetch} />} /> : null }
         <Route path="/login" element={<LoginForm setToken={setToken} setError={notify} /> } />
       </Routes>
     </div>

@@ -4,17 +4,17 @@ import Select from 'react-select';
 
 import { EDIT_AUTHOR, ALL_CONTENT } from '../queries'
 
-const Authors = ({ show, authors }) => {
+const Authors = ({ show, authors, notify }) => {
   const [name, setName] = useState(null);
   const [born, setBorn] = useState('')
 
   const [ editAuthor ] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [ { query: ALL_CONTENT } ],
     onError: (error) => {
-      const errors = error.graphQLErrors[0].extensions.error.errors
+      const errors = error.graphQLErrors
       const messages = Object.values(errors).map(e => e.message).join('\n')
       console.log(messages)
-      //setError(messages)
+      notify(messages)
     }
   })
   const submit = async (event) => {
